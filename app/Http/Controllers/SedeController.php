@@ -38,7 +38,7 @@ class SedeController extends Controller
             
             foreach ($data as $detalle)
             {
-                $detalle["Id_NotaPedido"] = $sede->id;
+                $detalle["Id_Sede"] = $sede->id;
                 Detalle_Inventario::create($detalle);
             }
 
