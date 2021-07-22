@@ -6,6 +6,7 @@ use App\Models\Solicitud;
 use Illuminate\Http\Request;
 
 use App\Http\Resources\SolicitudResource;
+use App\Models\Detalle_Solicitud;
 use Exception;
 
 class SolicitudController extends Controller
@@ -32,6 +33,15 @@ class SolicitudController extends Controller
         {
             $solicitud = $request->all();
             Solicitud::create($solicitud);
+
+            $data = $request->data;
+            $solicitud = Solicitud::latest('id')->first();
+            
+            foreach ($data as $detalle)
+            {
+                $detalle["Id_Solicitud"] = $solicitud->id;
+                Detalle_Solicitud::create($detalle);
+            }
 
             return response()->json([
                 'res' => true,

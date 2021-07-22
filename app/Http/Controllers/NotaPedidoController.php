@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\NotaPedidoResource;
+use App\Models\Detalle_NotaPedido;
 use App\Models\Nota_Pedido;
 use Exception;
 use Illuminate\Http\Request;
@@ -32,9 +33,18 @@ class NotaPedidoController extends Controller
             $nota_pedido = $request->all();
             Nota_Pedido::create($nota_pedido);
 
+            $data = $request->data;
+            $nota_pedido = Nota_Pedido::latest('id')->first();
+            
+            foreach ($data as $detalle)
+            {
+                $detalle["Id_NotaPedido"] = $nota_pedido->id;
+                Detalle_NotaPedido::create($detalle);
+            }
+
             return response()->json([
                 'res' => true,
-                'message' =>'Exito'
+                'message' =>'Exito',
             ],200);
         }
         catch(Exception $e)

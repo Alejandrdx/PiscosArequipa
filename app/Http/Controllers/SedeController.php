@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\SedeResource;
+use App\Models\Detalle_Inventario;
 use App\Models\Sede;
 use Exception;
 use Illuminate\Http\Request;
@@ -29,8 +30,17 @@ class SedeController extends Controller
     {
         try
         {
-            $data = $request->all();
-            Sede::create($data);
+            $sede = $request->all();
+            Sede::create($sede);
+
+            $data = $request->data;
+            $sede = Sede::latest('id')->first();
+            
+            foreach ($data as $detalle)
+            {
+                $detalle["Id_NotaPedido"] = $sede->id;
+                Detalle_Inventario::create($detalle);
+            }
 
             return response()->json([
                 'res' => true,

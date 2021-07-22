@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\FacturaResource;
+use App\Models\Detalle_Factura;
 use App\Models\Factura;
 use Exception;
 use Illuminate\Http\Request;
@@ -29,8 +30,17 @@ class FacturaController extends Controller
     {
         try
         {
-            $data = $request->all();
-            Factura::create($data);
+            $factura = $request->all();
+            Factura::create($factura);
+
+            $data = $request->data;
+            $factura = Factura::latest('id')->first();
+            
+            foreach ($data as $detalle)
+            {
+                $detalle["Id_Factura"] = $factura->id;
+                Detalle_Factura::create($detalle);
+            }
 
             return response()->json([
                 'res' => true,
